@@ -1,0 +1,27 @@
+@using Samples.TodoApp.UI.Services
+@inherits ComputedRenderStateComponent<TodoSummary>
+@inject Todos Todos
+@inject ILogger<TodoSummaryBadge> Log
+
+@{
+    Log.LogInformation("Rendering summary...");
+    if (State.IsInitial(out var summary)) {
+        <Badge Color="Color.Light">Loading...</Badge>
+        return;
+    }
+}
+
+<Badge Color="Color.Success"><b>@summary.DoneCount</b> done</Badge>
+<Badge Color="Color.Primary"><b>@summary.Count</b> total</Badge>
+(<StateOfStateText State="State"/>)
+
+@code {
+
+    protected override ComputedState<TodoSummary>.Options GetStateOptions()
+        => base.GetStateOptions() with {
+            UpdateDelayer = FixedDelayer.Get(1),
+        };
+
+    protected override Task<TodoSummary> ComputeState(CancellationToken cancellationToken)
+        => Todos.GetSummary(cancellationToken);
+}

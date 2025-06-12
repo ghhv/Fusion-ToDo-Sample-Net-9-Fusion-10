@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	  <TargetFramework>net9.0</TargetFramework>
+    <RootNamespace>Samples.TodoApp.Services</RootNamespace>
+    <AssemblyName>Samples.TodoApp.Services</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Abstractions\Abstractions.csproj" />
+  </ItemGroup>
+
+  <!-- Fusion packages -->
+  <ItemGroup>
+	  <!-- ProjectReference Include="..\..\..\src\ActualLab.Fusion.Server\ActualLab.Fusion.Server.csproj" />
+    <ProjectReference Include="..\..\..\src\ActualLab.Fusion\ActualLab.Fusion.csproj" />
+    <ProjectReference Include="..\..\..\src\ActualLab.Fusion.Ext.Services\ActualLab.Fusion.Ext.Services.csproj" / -->
+	  <PackageReference Include="ActualLab.Fusion" />
+	  <PackageReference Include="ActualLab.Fusion.Server" />
+	  <PackageReference Include="ActualLab.Fusion.Ext.Services" />
+  </ItemGroup>
+
+  <!-- Source generators -->
+  <ItemGroup>
+	  <!-- ProjectReference Include="..\..\..\src\ActualLab.Generators\ActualLab.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" / -->
+	  <PackageReference Include="ActualLab.Generators">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
+    <PackageReference Include="MemoryPack.Generator" PrivateAssets="all" />
+  </ItemGroup>
+
+</Project>

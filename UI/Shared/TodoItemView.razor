@@ -1,0 +1,66 @@
+@inherits ComputedStateComponent<TodoItem?>
+@inject ITodoApi TodoApi
+@inject ILogger<TodoItemView> Log
+
+@{
+    var c = State.Computed;
+    var m = State.Value;
+    Log.LogInformation(
+        "Rendering item #{Id} (Computed.Version = {Version}, IsConsistent = {IsConsistent}): {Item}",
+        Id, c.Version, c.IsConsistent(), m);
+    if (m == null)
+        return;
+}
+
+<Addons Margin="Margin.Is3.OnY">
+    <Addon AddonType="AddonType.Start">
+        <AddonLabel>
+            <Blazorise.Icon Name="@(m.IsDone ? FontAwesomeIcons.CheckSquare : FontAwesomeIcons.Square)"
+                            @onclick="InvertDone" />
+        </AddonLabel>
+    </Addon>
+    <TextEdit TextChanged="@(new EventCallback<string>(null, UpdateTitle))" Text="@m.Title" Debounce="true" />
+    <Addon AddonType="AddonType.End">
+        <Button Clicked="Remove" Color="Color.Warning">
+            <Blazorise.Icon Name="FontAwesomeIcons.Minus"/>
+        </Button>
+    </Addon>
+</Addons>
+
+@code {
+    [Parameter]
+    public string Id { get; set; } = null!;
+
+    protected override Task<TodoItem?> ComputeState(CancellationToken cancellationToken)
+        => TodoApi.Get(Session, Ulid.Parse(Id), cancellationToken);
+
+    private Task InvertDone()
+    {
+        var item = State.Value;
+        if (item == null)
+            return Task.CompletedTask;
+
+        item = item with { IsDone = !item.IsDone };
+        return UICommander.Run(new Todos_AddOrUpdate(Session, item));
+    }
+
+    private Task UpdateTitle(string title)
+    {
+        title = title.Trim();
+        var item = State.Value;
+        if (item == null || item.Title == title)
+            return Task.CompletedTask;
+
+        item = item with { Title = title };
+        return UICommander.Run(new Todos_AddOrUpdate(Session, item));
+    }
+
+    private Task Remove()
+    {
+        var item = State.Value;
+        if (item == null)
+            return Task.CompletedTask;
+
+        return UICommander.Run(new Todos_Remove(Session, item.Id));
+    }
+}
