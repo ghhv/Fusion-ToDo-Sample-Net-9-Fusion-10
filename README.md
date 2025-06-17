@@ -1,0 +1,1 @@
+Extracted the ActualLab Fusion (10.x) ToDo app solution files, changed the Fusion project references to package references and set the target framework as .NET 9. Also added a copy of the Directory.Packages.props file with (mostly) current package versions.
